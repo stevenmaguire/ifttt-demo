@@ -20,13 +20,13 @@ class ReceiveTest extends TestCase {
         $this->assertTrue(is_array($body));
         $this->assertCount(4, $body);
         $this->assertContains(Events\UserWasRegistered::class, $body[0]);
-        $this->assertContains(Handlers\SendWelcomeEmail::class, $body[0]);
+        $this->assertContains(Handlers\UserHandler::class.'::sendWelcomeEmail', $body[0]);
         $this->assertContains(Events\UserWasRegistered::class, $body[1]);
-        $this->assertContains(Handlers\AssignDefaultPlan::class, $body[1]);
+        $this->assertContains(Handlers\UserHandler::class.'::assignDefaultPlan', $body[1]);
         $this->assertContains(Events\PlanWasChanged::class, $body[2]);
-        $this->assertContains(Handlers\ProcessPayment::class, $body[2]);
+        $this->assertContains(Handlers\PlanHandler::class.'::processPayment', $body[2]);
         $this->assertContains(Events\PaymentWasProcessed::class, $body[3]);
-        $this->assertContains(Handlers\SendReceiptEmail::class, $body[3]);
+        $this->assertContains(Handlers\PaymentHandler::class.'::sendReceiptEmail', $body[3]);
     }
 
     /**
@@ -44,9 +44,9 @@ class ReceiveTest extends TestCase {
         $this->assertTrue(is_array($body));
         $this->assertCount(2, $body);
         $this->assertContains(Events\PlanWasChanged::class, $body[0]);
-        $this->assertContains(Handlers\ProcessPayment::class, $body[0]);
+        $this->assertContains(Handlers\PlanHandler::class.'::processPayment', $body[0]);
         $this->assertContains(Events\PaymentWasProcessed::class, $body[1]);
-        $this->assertContains(Handlers\SendReceiptEmail::class, $body[1]);
+        $this->assertContains(Handlers\PaymentHandler::class.'::sendReceiptEmail', $body[1]);
     }
 
     /**
@@ -66,7 +66,7 @@ class ReceiveTest extends TestCase {
         $this->assertTrue(is_array($body));
         $this->assertCount(1, $body);
         $this->assertContains(Events\TweetWasPosted::class, $body[0]);
-        $this->assertContains(Handlers\RetweetMention::class, $body[0]);
+        $this->assertContains(Handlers\TweetHandler::class.'::retweetMention', $body[0]);
     }
 
     /**

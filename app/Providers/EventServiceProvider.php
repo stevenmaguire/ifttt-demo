@@ -1,7 +1,9 @@
 <?php namespace App\Providers;
 
+use App\Handlers\Events as Handlers;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider {
 
@@ -11,19 +13,7 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
-        'App\Events\UserWasRegistered' => [
-            'App\Handlers\Events\SendWelcomeEmail',
-            'App\Handlers\Events\AssignDefaultPlan',
-        ],
-        'App\Events\PlanWasChanged' => [
-            'App\Handlers\Events\ProcessPayment',
-        ],
-        'App\Events\PaymentWasProcessed' => [
-            'App\Handlers\Events\SendReceiptEmail',
-        ],
-        'App\Events\TweetWasPosted' => [
-            'App\Handlers\Events\RetweetMention',
-        ],
+        //
     ];
 
     /**
@@ -36,7 +26,10 @@ class EventServiceProvider extends ServiceProvider {
     {
         parent::boot($events);
 
-        //
+        Event::subscribe(Handlers\UserHandler::class);
+        Event::subscribe(Handlers\PaymentHandler::class);
+        Event::subscribe(Handlers\PlanHandler::class);
+        Event::subscribe(Handlers\TweetHandler::class);
     }
 
 }

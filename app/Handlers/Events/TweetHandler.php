@@ -4,11 +4,8 @@ use App\Tweet;
 use App\Events\TweetWasPosted;
 use App\Services\ApiDemoService;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
-
-class RetweetMention {
-
+class TweetHandler
+{
     /**
      * Create the event handler.
      *
@@ -20,19 +17,35 @@ class RetweetMention {
     }
 
     /**
-     * Handle the event.
-     *
-     * @param  TweetWasPosted  $event
-     * @return void
+     * Handle tweet posted event
      */
-    public function handle(TweetWasPosted $event)
+    public function onTweetPosted(TweetWasPosted $event)
+    {
+        $this->retweetMention($event);
+    }
+
+    /**
+     * Handle busines logic for retweeting.
+     */
+    private function retweetMention(TweetWasPosted $event)
     {
         $tweet = $event->tweet;
 
         if ($this->tweetMentionsUser($tweet)) {
-            $message = get_class() . ' triggered after ' . $event->getSummary($tweet);
+            $message = __METHOD__.' triggered after ' . $event->getSummary($tweet);
             $this->demo->push($message);
         }
+    }
+
+    /**
+     * Register the listeners for the subscriber.
+     *
+     * @param  Illuminate\Events\Dispatcher  $events
+     * @return array
+     */
+    public function subscribe($events)
+    {
+        $events->listen(TweetWasPosted::class, get_class().'@onTweetPosted');
     }
 
     /**
@@ -48,5 +61,4 @@ class RetweetMention {
             && isset($tweet->body)
             && strpos($tweet->body, $tweet->username);
     }
-
 }
