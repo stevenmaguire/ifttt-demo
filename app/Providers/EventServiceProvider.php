@@ -11,8 +11,18 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
-        'event.name' => [
-            'EventListener',
+        'App\Events\UserWasRegistered' => [
+            'App\Handlers\Events\SendWelcomeEmail',
+            'App\Handlers\Events\AssignDefaultPlan',
+        ],
+        'App\Events\PlanWasChanged' => [
+            'App\Handlers\Events\ProcessPayment',
+        ],
+        'App\Events\PaymentWasProcessed' => [
+            'App\Handlers\Events\SendReceiptEmail',
+        ],
+        'App\Events\TweetWasPosted' => [
+            'App\Handlers\Events\RetweetMention',
         ],
     ];
 
